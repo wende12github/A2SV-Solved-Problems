@@ -1,16 +1,22 @@
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
         length = len(nums)
+        queue = deque()
         mini_ops = 0
 
-        for i in range(length - 2):
-            if nums[i] == 0:
-                nums[i] ^= 1
-                nums[i+1] ^= 1
-                nums[i+2] ^= 1
-                mini_ops += 1
+        for i in range(length):
 
-        if nums[-1] == 0 or nums[-2] == 0:
-            return -1
+            while queue and queue[0] < i:
+                queue.popleft()
+
+            flips = len(queue) % 2
+            current = nums[i] ^ flips
+
+            if current == 0:
+                if i + 2 >= length:
+                    return -1
+
+                mini_ops += 1
+                queue.append(i + 2)
 
         return mini_ops
