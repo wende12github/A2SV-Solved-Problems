@@ -6,19 +6,23 @@
 #         self.right = right
 class Solution:
     def pathSum(self, root: Optional[TreeNode], targetSum: int) -> int:
-        if root == None:
-            return 0
+        self.pathCount = 0
+        self.pathSums = {0: 1}
 
-        return self.pathSum(root.left, targetSum) + self.pathSumHelper(root, targetSum) + self.pathSum(root.right, targetSum)
+        def dfsHelper(root, currentSum):
+            if root is None:
+                return
 
-    def pathSumHelper(self, root, targetSum):
-        if root == None:
-            return 0
+            currentSum += root.val
+            self.pathCount += self.pathSums.get(currentSum - targetSum, 0)
+            self.pathSums[currentSum] = self.pathSums.get(currentSum, 0) + 1
 
-        result = 0
-        if root.val == targetSum:
-            result += 1
-        result += self.pathSumHelper(root.left, targetSum - root.val)
-        result += self.pathSumHelper(root.right, targetSum - root.val)
+            if root.right:
+                dfsHelper(root.right, currentSum)
+            if root.left:
+                dfsHelper(root.left, currentSum)
 
-        return result
+            self.pathSums[currentSum] -= 1
+            
+        dfsHelper(root, 0)
+        return self.pathCount
