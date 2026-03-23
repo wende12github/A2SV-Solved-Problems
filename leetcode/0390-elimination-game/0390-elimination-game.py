@@ -1,6 +1,13 @@
 class Solution:
     def lastRemaining(self, n: int) -> int:
-        if n == 1:
-            return 1
+        def helper(n, leftMove):
+            if n == 1:
+                return 1
+            if leftMove:
+                return 2 * helper(n//2, 0)
+            elif n%2 == 1:
+                return 2 * helper(n//2, 1)
+            else:
+                return 2 * helper(n//2, 1) - 1
 
-        return 2*(n//2 + 1 - self.lastRemaining(n//2))
+        return helper(n, 1)
