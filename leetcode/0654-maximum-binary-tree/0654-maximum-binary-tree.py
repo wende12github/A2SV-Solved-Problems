@@ -6,19 +6,15 @@
 #         self.right = right
 class Solution:
     def constructMaximumBinaryTree(self, nums: List[int]) -> Optional[TreeNode]:
+        stack = []
+        for num in nums:
+            node = TreeNode(num)
+            while stack and stack[-1].val < num:
+                node.left = stack.pop()
 
-        def helperRec(left, right):
-            if left > right:
-                return None
+            if stack:
+                stack[-1].right = node
 
-            m = left
-            for i in range(left + 1, right + 1):
-                if nums[i] > nums[m]:
-                    m = i
-            
-            node = TreeNode(nums[m])
-            node.left = helperRec(left, m - 1)
-            node.right = helperRec(m + 1, right)
-            
-            return node
-        return helperRec(0, len(nums) - 1)
+            stack.append(node)
+
+        return stack[0]
