@@ -1,17 +1,15 @@
 class Solution:
     def findTargetSumWays(self, nums: List[int], target: int) -> int:
-        memo = {}
-        def backtrack(current_index: int, current_sum: int) -> int:
-            if current_index == len(nums):
-                return 1 if current_sum == target else 0
-            
-            if (current_index, current_sum) in memo:
-                return memo[(current_index, current_sum)]
-
-            add_ways = backtrack(current_index + 1, current_sum + nums[current_index])
-            sub_ways = backtrack(current_index + 1, current_sum - nums[current_index])
-
-            memo[(current_index, current_sum)] = add_ways + sub_ways
-            return memo[(current_index, current_sum)]
-
-        return backtrack(0, 0)
+        total_sum = sum(nums)
+        if total_sum < abs(target) or (total_sum + target) % 2 == 1:
+            return 0
+        
+        subset_sum = (total_sum + target) // 2
+        dp = [0] * (subset_sum + 1)
+        dp[0] = 1
+        
+        for num in nums:
+            for j in range(subset_sum, num - 1, -1):
+                dp[j] += dp[j - num]
+                
+        return dp[subset_sum]
